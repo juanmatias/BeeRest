@@ -16,7 +16,7 @@
   *
   */
 
-class getdestinos extends dbservice
+class getdestinostest extends dbservice
 {
   /**
   * Fills the valid_actions with this object's actions
