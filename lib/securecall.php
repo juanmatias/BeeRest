@@ -8,9 +8,9 @@
  */
 
  /**
-  * Class securecall - Implementation of API class for get info from modules
+  * Class securecall - Secyure implementation of API class for get info from modules
   *
-  * This class gets information from modules in vendor/samplevendor/Modules
+  * This class gets information from modules in vendor/samplevendor/Modules and handles security
   *
   * In this Implementation :
   *
@@ -29,6 +29,8 @@ class securecall extends API
     */
     public function __construct($request, $origin) {
         parent::__construct($request);
+
+        // Add security and ACL to verb/actions
 
         // Abstracted out for example
         // $APIKey = new APIKey();
@@ -80,13 +82,6 @@ class securecall extends API
 
               return array('code' => 3, 'error' => $this->errors[3]);
             }
-
-            $r = new \samplevendor\Modules\destinos();
-            $s = '' ;
-            foreach ($this->args as $key => $value) {
-              $s .= $key.' -> '.$value.' // ';
-            }
-            return array( 'code' => 0, "endpoint" => $this->endpoint,  "Your verb is " => $this->verb, "Your parameters are " =>$s);
         } else {
             return array('code' => 5, 'error' => $this->errors[5]);
         }

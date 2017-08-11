@@ -24,58 +24,13 @@ class getdestinos extends dbservice
   function __construct()
   {
     parent::__construct();
-    $this->add_actions(array('qty_full','qty', 'activity', 'statistics'));
+    $this->add_actions(array('activity'));
   }
 
-  public function qty_full($params,$request)
-  {
-    $qty = 0;
-    $qtyh = 0;
-    $qtym = 0;
-    if($r = $this->db->countRows('pm_options','categories_id = 1'))
-    {
-      $r = $this->db->getResults();
-      $row = $r->fetch_assoc();
-      $qty = $row['qty'];
-    }
-    if($r = $this->db->countRows('pm_options','gender = 1 AND categories_id = 1'))
-    {
-      $r = $this->db->getResults();
-      $row = $r->fetch_assoc();
-      $qtyh = $row['qty'];
-      $qtyh = round($qtyh * 100 / $qty,2);
-    }
-    if($r = $this->db->countRows('pm_options','gender = 0 AND categories_id = 1'))
-    {
-      $r = $this->db->getResults();
-      $row = $r->fetch_assoc();
-      $qtym = $row['qty'];
-      $qtym = round($qtym * 100 / $qty,2);
-    }
-
-    return array('qty' => $qty, 'qtyh' => $qtyh, 'qtym' => $qtym, );
-
-  }
-
-  public function qty($params,$request)
-  {
-
-    if(!$r = $this->db->countRows('pm_options'))
-    {
-      return null;
-    }
-    else
-    {
-      $r = $this->db->getResults();
-      $row = $r->fetch_assoc();
-      return $row['qty'];
-    }
-
-  }
 
   public function activity($params,$request)
   {
-    
+
     $time = 10;
     $response = array('lastname' => '', 'qty' => 0, 'true' => 0);
 
@@ -137,85 +92,6 @@ class getdestinos extends dbservice
 
     }
     return $response;
-  }
-
-  public function statistics($params,$request)
-  {
-    $statistics = array();
-    $moreselected = '';
-    $moreselectedqty = 0;
-    $selected = array();
-
-    $sql = 'select count(*) as qty, selected_option as color from pm_options  where categories_id = 1 group by selected_option order by selected_option;';
-    $this->db->queryPrep($sql);
-    if(!$r = $this->db->queryExe())
-    {
-      return null;
-    }
-    else
-    {
-      $r = $this->db->getResults();
-
-      $colors = array();
-      $qty = 0;
-      while($row = $r->fetch_assoc())
-      {
-        $colors[$row['color']] = array('qty' => $row['qty'],'color'=>$row['color'],'percentage' => 0);
-        if($moreselectedqty < $row['qty']){
-          $moreselected = $row['color'];
-          $moreselectedqty = $row['qty'];
-        }
-        $selected[] = $row['color'];
-        $qty += floatval($row['qty']);
-      }
-
-      foreach ($colors as $key => $value) {
-        $per = floatval($value['qty']) * 100 / $qty;
-        $colors[$key]['percentage'] = round($per,2);
-      }
-
-      $statistics['general'] = $colors;
-    }
-
-    $sql = 'select count(*) as qty, selected_option as color, gender from pm_options  where categories_id = 1 group by selected_option, gender;';
-    $this->db->queryPrep($sql);
-    if(!$r = $this->db->queryExe())
-    {
-      return null;
-    }
-    else
-    {
-      $r = $this->db->getResults();
-
-      $colors = array();
-      $qty = 0;
-
-      while($row = $r->fetch_assoc())
-      {
-        $colors[$row['color'].'_'.($row['gender'] == 1 ? 'H':'M')] = array('qty' => $row['qty'],'color'=>$row['color'],'percentage' => 0, 'gender' => $row['gender']);
-        $qty += floatval($row['qty']);
-      }
-
-      foreach ($colors as $key => $value) {
-        // $statistics['general'][$value['color']]
-        $per = floatval($value['qty']) * 100 / $qty;
-        $colors[$key]['percentage'] = round($per,2);
-      }
-
-      $statistics['segmented'] = $colors;
-    }
-
-
-    $angle = 0;
-    $anglestep = 360 / sizeof($selected);
-    for($f=0;$f<sizeof($selected);$f++){
-      if($selected[$f] != $moreselected){
-        $angle += $anglestep;
-      }
-    }
-    $statistics['direction'] = array($angle,$moreselected);
-
-    return $statistics;
   }
 
 }
