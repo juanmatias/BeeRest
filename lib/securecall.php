@@ -72,7 +72,7 @@ class securecall extends API
               if(in_array($action,$service->valid_actions())){
                   $r = $service->$action($this->args,$this->request);
 
-                  return array('response'=> $r);
+                  return array('code' => 0, 'response'=> $r);
 
               }else{
 
