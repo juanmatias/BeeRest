@@ -24,6 +24,9 @@
   *       caratula will be in the $this->request array
   *
   *
+  * Code based on http://coreymaynard.com/blog/creating-a-restful-api-with-php/
+  *
+  *
   * @property string $method The HTTP method this request was made in, either GET, POST, PUT or DELETE
   * @property string $endpoint The Model requested in the URI. eg: /files
   * @property string $verb An optional additional descriptor about the endpoint, used for things that can not be handled by the basic methods. eg: /files/process
