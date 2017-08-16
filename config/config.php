@@ -22,10 +22,11 @@ $errors = array(
   6 => 'No verb supplied',
 );
 
-// set autoload for classes
+// set autoload for classes (and its order)
 $classesDir = array (
-    ROOT_DIR.'lib/',
-    ROOT_DIR.'vendor/',
+    ROOT_DIR.'core/',
+    ROOT_DIR.'vendor/vendorname/',
+    ROOT_DIR.'core/Modules/',
 );
 
 /**
