@@ -54,7 +54,7 @@ class securecall extends API
      */
      protected function get_service() {
         if ($this->method == 'GET') {
-          $this->processRequest();
+          return $this->processRequest();
         } else {
           return array('code' => 5, 'error' => $this->errors[5]);
         }
@@ -65,7 +65,7 @@ class securecall extends API
       */
       protected function post_service() {
          if ($this->method == 'POST') {
-           $this->processRequest();
+           return $this->processRequest();
          } else {
            return array('code' => 8, 'error' => $this->errors[8]);
          }
