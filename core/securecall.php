@@ -50,41 +50,25 @@ class securecall extends API
     }
 
     /**
-     * board endpoint handles all requests and calls to modules if they exist
+     * get_service endpoint that accept only GET requests and calls to modules if they exist
      */
-     protected function board() {
+     protected function get_service() {
         if ($this->method == 'GET') {
-            try
-            {
-              // In the verb I have the module name, i.e. "getdestinos"
-              if(!isset($this->verb) || $this->verb == '')
-              {
-                return array('code' => 6, 'error' => $this->errors[6]);
-              }
-              $service = "\\Modules\\".$this->verb;
-              $service = new $service();
-              // First argument is the action to call, so let's check if it exists
-              $action = '';
-              if(isset($this->args[0]))
-              {
-                $action = array_shift($this->args);
-              }
-              if(in_array($action,$service->valid_actions())){
-                  $r = $service->$action($this->args,$this->request);
-
-                  return array('code' => 0, 'response'=> $r);
-
-              }else{
-
-                return array('code' => 4, 'error' => $this->errors[4]);
-              }
-            } catch (Exception $e) {
-
-              return array('code' => 3, 'error' => $this->errors[3]);
-            }
+          $this->processRequest();
         } else {
-            return array('code' => 5, 'error' => $this->errors[5]);
+          return array('code' => 5, 'error' => $this->errors[5]);
         }
      }
+
+     /**
+      * post_service endpoint that accept only POST requests and calls to modules if they exist
+      */
+      protected function post_service() {
+         if ($this->method == 'POST') {
+           $this->processRequest();
+         } else {
+           return array('code' => 8, 'error' => $this->errors[8]);
+         }
+      }
  }
  ?>

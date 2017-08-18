@@ -20,11 +20,12 @@ A DBRS and mysqli depending on what you want to do (demo class uses a DBRS, DB_c
 1. Put this code in a webserver
 2. Modify .htaccess
 3. Modify config.php
-4. Add your own classes
+4. Create your own service
+5. Add your own Module classes
 
 ==== Detail ====
 
-=== .htaccess ===
+=== 2. Modify .htaccess ===
 
 <code>
 <IfModule mod_rewrite.c>
@@ -34,3 +35,49 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ ./api.php?request=$1 [QSA,NC,L]
 </IfModule>
 </code>
+
+=== 3. Modify config.php ===
+
+In config.php there is an array called $classesDir. This stores the dirs in which API will search for classes.
+
+Remember that the order is important since when it find a matching class it will stop search.
+
+Add your vendorname created dir to this array to allow your classes to be found.
+
+<code>
+$classesDir = array (
+    ROOT_DIR.'core/',
+    ROOT_DIR.'vendor/vendorname/',
+);
+</code>
+
+In this case it will search in core/ and then in vendor/vendorname.
+
+Then, when a reqest is made, in API the verb is matched with a class in your modules dir like this:
+
+<code>
+$service = "\\Modules\\".$this->verb;
+</code>
+
+So API will find in core/Modules and then in vendor/vendorname/Modules.
+
+=== 4. Create your own service ===
+
+Create your vendorname dir:
+
+<code>
+./vendor/vendorname/Modules
+./vendor/vendorname/Models
+</code>
+
+Here you have two options.
+  - Extend the API class
+  - Extend the securecall class
+
+In the second option you are using API Key verification call and using services that only accepts a request type (i.e. POST, GET, etc).
+
+In your vendorname dir create a class that extends API or securecall, then create your own methods (endpoints) that calls get_service or post_service (if using securecall) or processRequest (if using directly API). Don't forget to call your class from /api.php.
+
+In this class will be the endpoints (each method you can call is an endpoint).
+
+=== 5. Add your own modules ===
