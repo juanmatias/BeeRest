@@ -8,7 +8,7 @@
  */
 
  /**
-  * Class securecall - Secyure implementation of API class for get info from modules
+  * Class securecall - Secure implementation of API class for get info from modules
   *
   * This class gets information from modules in vendor/samplevendor/Modules and handles security
   *
@@ -30,22 +30,14 @@ class securecall extends API
     public function __construct($request, $origin) {
         parent::__construct($request);
 
-        // Add security and ACL to verb/actions
+        $APIKey = new APIKey();
 
-        // Abstracted out for example
-        // $APIKey = new APIKey();
-        // $User = new Models\User();
-        //
-        // if (!array_key_exists('apiKey', $this->request)) {
-        //     throw new Exception('No API Key provided');
-        // } else if (!$APIKey->verifyKey($this->request['apiKey'], $origin)) {
-        //     throw new Exception('Invalid API Key');
-        // } else if (array_key_exists('token', $this->request) &&
-        //      !$User->get('token', $this->request['token'])) {
-        //
-        //     throw new Exception('Invalid User Token');
-        // }
-        //
+        if (!array_key_exists('apiKey', $this->request)) {
+            throw new Exception('No API Key provided');
+        } else if (!$APIKey->verifyKey($this->request['apiKey'], $origin)) {
+            throw new Exception('Invalid API Key');
+        }
+
 
     }
 

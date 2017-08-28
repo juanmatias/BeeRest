@@ -9,14 +9,14 @@
 
 define('ROOT_DIR',getcwd().'/');
 define('DB_HOST','localhost');
-define('DB_NAME','quiz');
-define('DB_USR','quizuser');
-define('DB_PWD','quizuser');
+define('DB_NAME','pentatistics');
+define('DB_USR','pentatistics');
+define('DB_PWD','pentatistics');
 
 // set autoload for classes (and its order)
 $classesDir = array (
     ROOT_DIR.'core/',
-    ROOT_DIR.'vendor/vendorname/',
+    ROOT_DIR.'vendor/',
 );
 
 
