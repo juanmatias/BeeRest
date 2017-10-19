@@ -26,11 +26,23 @@ class vendorname extends securecall
     }
 
     /**
-     * endpoint endpoint
+     * get_endpoint endpoint
      * (rename it to your desired endpoint)
+     * This sample forces connection to be GET
      */
-     public function endpoint() {
+     public function get_endpoint() {
        $r = $this->get_service();
+
+       return $r;
+     }
+
+    /**
+     * post_endpoint endpoint
+     * (rename it to your desired endpoint)
+     * This sample forces connection to be POST
+     */
+     public function post_endpoint() {
+       $r = $this->post_service();
 
        return $r;
      }
