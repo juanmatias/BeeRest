@@ -32,7 +32,7 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 }
 
 try {
-    // calling your custom API class , in the example vendor/vendorname/vendorname.php (add dir in config)
+    // calling your custom API class , in the example vendor/vendorname.php (add dir in config)
     $API = new vendorname($_REQUEST['request'], $_SERVER['HTTP_ORIGIN']);
     echo $API->processAPI();
 } catch (Exception $e) {
