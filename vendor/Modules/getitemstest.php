@@ -1,6 +1,6 @@
 <?php
 /**
- * Class getdestinos | vendor/Modules/destinos.php
+ * Class getitemstest | vendor/Modules/getitemstest.php
  *
  * @package RESTful WebService Model
  * @author Juan Matias de la Camara Beovide <juanmatias@gmail.com>
@@ -10,9 +10,9 @@
  namespace Modules;
 
  /**
-  * Class getdestinos - Service to query destinos statistics
+  * Class getitemstest - Sample Service
   *
-  * Queries the database and build statistics about "destinos"
+  * 
   *
   */
 
