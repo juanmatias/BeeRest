@@ -36,7 +36,7 @@ In root dir you have these:
 
   - assets - samples and other stuff
   - config - config files
-  - core - the core of **Bee Rest** *(you should not modify file here)*
+  - core - the core of **Bee Rest** *(you should not modify files here)*
   - doc - the docs
   - images - the images
   - vendor - dir with all your stuff *(here you shoud put your files)*
@@ -50,6 +50,8 @@ In root dir you have these:
   - Modify config.php
   - Create your own service
   - Add your own Module classes
+  - Set your security
+  - Test your service
 
 ### Detail
 
@@ -92,11 +94,76 @@ Here you have two options.
 
 In the second option you are using API Key verification call and using services that only accepts a request type (i.e. POST, GET, etc).
 
-In your vendor dir create a class that extends API or securecall, then create your own methods (endpoints) that calls get_service or post_service (if using securecall) or processRequest (if using directly API). Don't forget to call your class from /api.php.
+In your vendor dir create a class that extends API or securecall, then create your own methods (endpoints) that calls get_service or post_service (if using securecall, see sample at the end of this documento on how to handle multiple methods under same endpoint) or processRequest (if using directly API). Don't forget to call your class from /api.php. (in api.php just replace vendorname with your created class)
 
-In this class will be the endpoints (each method you can call is an endpoint).
+In this class will be the endpoints (each method you can call in this class is an endpoint).
+
+Say you have put BeeRest's files under <your_web_files_dir>/BeeRest then the URL will be something like this:
+
+```
+http://<your server>/BeeRest/endpoint/ ...
+```
+
+Say you create an endpoint (a method in your class) called flyingBee, then your URL will be like this:
+
+```
+http://<your server>/BeeRest/flyingBee/ ...
+```
+
 
 #### 5. Add your own modules
+
+Under vendor/Modules you will create files with classes for your services. The class names will be the **verbs** in your URL.
+
+Let's create a class here with name myVerb. Use the sample class in this dir.
+
+This class can be inherited from service or from dbservice. The difference? You can guess the answer... the second one has pre set the DB access. (using parameters found in config/config.php)
+
+```
+class myVerb extends service
+{
+```
+
+I will use **service** here, for **dbservice** please refer to sample.
+
+Let's add a method to this class. The method names will be the arg0 in your URL. Let's name the method as myMethod.
+
+First of all you must export in your class an array with all methods you want to be accessible from the API:
+
+```
+  function __construct()
+  {
+    parent::__construct();
+    $this->add_actions(array('myMethod'));
+  }
+```
+
+Now the method:
+
+```
+  public function myMethod($params,$request)
+  {
+
+```
+
+And drop your code in its scope.
+
+**returns** must be null or an array. This array will be converted to JSON when exposed to consumer.
+
+Keep in mind that a good practice is the send back to the client HTTP Response Codes. ([REST API Quick Tips](http://www.restapitutorial.com/lessons/restquicktips.html))
+
+#### 6. Set your security
+
+If you are using securecall you must edit your vendor/APIKey.php file to set your way of handle security.
+
+#### 7. Test your service
+
+Let's say you have created a GET service (easy to test in your browser)... test it requesting an URL like this (in our example):
+
+```
+http://<your server>/BeeRest/flyingBee/myVerb/myMethod?apiKey=AIzaSyDrfzKxEXLCPZQapKliQLC5OFrpuWqAfz4
+```
+
 
 ### How it works?
 
@@ -138,4 +205,54 @@ In the example *vendorname.php* inherits *securecall*.
 A security class is provided in vendor/ApiKey.php where a method *verifyKey* is a sample security check.
 
 
-### How to set security?
+### How to handle multiple methods under same endpoint?
+
+One way could be this one (based on verb):
+
+```
+      public function despacho() {
+		  $post_verbs = array('alta');
+		  $put_verbs = array('matricular');
+		  $delete_verbs = array('desmatricular');
+		  if( in_array($this->verb,$post_verbs) )
+		  {
+			  $r = $this->post_service();
+			  
+		  }else if( in_array($this->verb,$put_verbs) )
+		  {
+			  $r = $this->put_service();
+			  
+		  }else
+		  {
+			  $r = $this->get_service();
+		  }
+       
+       return $r;
+     }
+```
+
+or this one (based on verb/method):
+
+```
+      public function despacho() {
+		  $post_verbs = array('matricular/alumno_nuevo');
+		  $put_verbs = array('matricular/alumno_existente');
+		  $delete_verbs = array('desmatricular/alumno');
+		  if( in_array($this->verb.'/'.$this->args[0],$post_verbs) )
+		  {
+			  $r = $this->post_service();
+			  
+		  }else if( in_array($this->verb.'/'.$this->args[0],$put_verbs) )
+		  {
+			  $r = $this->put_service();
+			  
+		  }else
+		  {
+			  $r = $this->get_service();
+		  }
+       
+       return $r;
+     }
+
+```
+
